@@ -19,10 +19,13 @@ app.use(express.json());
 app.use("/api/auth", authRoutes);
 app.use("/api/reminders", reminderRoutes);
 
-// Connect to MongoDB without starting a listener, Vercel handles this
+// Connect to MongoDB
 mongoose
   .connect(process.env.MONGO_URI)
-  .then(() => console.log("MongoDB connected successfully for Vercel deployment."))
+  .then(() => {
+    console.log("MongoDB connected successfully.");
+    app.listen(5000, () => console.log("Server running on port 5000"));
+  })
   .catch((err) => console.error(err));
 
 // Export the app for Vercel's serverless environment
