@@ -4,6 +4,15 @@ import sendEmail from "../utils/sendEmail.js";
 export const createReminder = async (req, res) => {
   try {
     const { title, description, time } = req.body;
+
+    if (!title || !description || !time) {
+      return res.status(400).json({ msg: "Please fill out all fields." });
+    }
+
+    if (new Date(time).getTime() <= Date.now()) {
+      return res.status(400).json({ msg: "Reminder time must be in the future." });
+    }
+
     const reminder = await Reminder.create({
       title,
       description,
