@@ -68,6 +68,7 @@ export default function Dashboard() {
 
   return (
     <div>
+      <h2>Set Reminder</h2>
       <input
         name="title"
         placeholder="Title"
