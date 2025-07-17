@@ -39,3 +39,36 @@ export const getReminders = async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 };
+
+export const deleteReminder = async (req, res) => {
+  try {
+    const reminder = await Reminder.findOneAndDelete({ _id: req.params.id, userId: req.userId });
+    if (!reminder) {
+      return res.status(404).json({ msg: "Reminder not found." });
+    }
+    res.json({ msg: "Reminder deleted." });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
+
+export const updateReminder = async (req, res) => {
+  try {
+    const { title, description, time } = req.body;
+    const update = {};
+    if (title !== undefined) update.title = title;
+    if (description !== undefined) update.description = description;
+    if (time !== undefined) update.time = time;
+    const reminder = await Reminder.findOneAndUpdate(
+      { _id: req.params.id, userId: req.userId },
+      update,
+      { new: true }
+    );
+    if (!reminder) {
+      return res.status(404).json({ msg: "Reminder not found." });
+    }
+    res.json(reminder);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};

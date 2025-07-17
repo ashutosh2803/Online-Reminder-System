@@ -7,6 +7,8 @@ export default function Dashboard() {
   const [error, setError] = useState("");
   const [fieldErrors, setFieldErrors] = useState({});
   const [isDateInvalid, setIsDateInvalid] = useState(false);
+  const [editId, setEditId] = useState(null);
+  const [editForm, setEditForm] = useState({ title: "", description: "", time: "" });
   const token = localStorage.getItem("token");
 
   const fetchReminders = useCallback(async () => {
@@ -66,6 +68,48 @@ export default function Dashboard() {
     }
   };
 
+  const handleDelete = async (id) => {
+    try {
+      await axios.delete(`/api/reminders/${id}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      fetchReminders();
+    } catch {
+      setError("Could not delete reminder.");
+    }
+  };
+
+  const handleEditClick = (reminder) => {
+    setEditId(reminder._id);
+    setEditForm({
+      title: reminder.title,
+      description: reminder.description,
+      time: new Date(reminder.time).toISOString().slice(0, 16),
+    });
+  };
+
+  const handleEditInputChange = (e) => {
+    const { name, value } = e.target;
+    setEditForm({ ...editForm, [name]: value });
+  };
+
+  const handleEditSave = async (id) => {
+    try {
+      await axios.put(`/api/reminders/${id}`,
+        { ...editForm },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      setEditId(null);
+      fetchReminders();
+    } catch {
+      setError("Could not update reminder.");
+    }
+  };
+
+  const handleEditCancel = () => {
+    setEditId(null);
+  };
+
   return (
     <div>
       <h2>Set Reminder</h2>
@@ -92,10 +136,41 @@ export default function Dashboard() {
       />
       <button onClick={createReminder}>Create</button>
       {error && <p style={{ color: "red" }}>{error}</p>}
-      <ul>
+      <ul className="reminders-list">
         {reminders.map((r) => (
-          <li key={r._id}>
-            {r.title} - {new Date(r.time).toLocaleString()}
+          <li key={r._id} className="reminder-card">
+            {editId === r._id ? (
+              <>
+                <input
+                  name="title"
+                  value={editForm.title}
+                  onChange={handleEditInputChange}
+                  style={{ marginRight: 4 }}
+                />
+                <input
+                  name="description"
+                  value={editForm.description}
+                  onChange={handleEditInputChange}
+                  style={{ marginRight: 4 }}
+                />
+                <input
+                  name="time"
+                  type="datetime-local"
+                  value={editForm.time}
+                  onChange={handleEditInputChange}
+                  style={{ marginRight: 4 }}
+                />
+                <button onClick={() => handleEditSave(r._id)}>Save</button>
+                <button onClick={handleEditCancel} style={{ marginLeft: 4 }}>Cancel</button>
+              </>
+            ) : (
+              <>
+                {r.title} - {new Date(r.time).toLocaleString()} <br />
+                {r.description}
+                <button onClick={() => handleEditClick(r)} style={{ marginLeft: 8 }}>Edit</button>
+                <button onClick={() => handleDelete(r._id)} style={{ marginLeft: 4 }}>Delete</button>
+              </>
+            )}
           </li>
         ))}
       </ul>

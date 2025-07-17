@@ -11,3 +11,57 @@
   align-items: center;
   gap: 1rem;
 }
+
+.reminders-list {
+  list-style: none;
+  padding: 0;
+  margin: 2rem 0 0 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1.2rem;
+  width: 100%;
+  max-width: 1000px;
+}
+
+.reminder-card {
+  background: #fff;
+  color: #222;
+  border-radius: 12px;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.08), 0 1.5px 4px rgba(0,0,0,0.06);
+  padding: 1.2rem 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  position: relative;
+  transition: box-shadow 0.2s;
+}
+
+.reminder-card:hover {
+  box-shadow: 0 4px 20px rgba(0,0,0,0.13), 0 2px 8px rgba(0,0,0,0.09);
+}
+
+.reminder-card button {
+  margin-right: 0.5rem;
+  margin-top: 0.5rem;
+  font-size: 0.95em;
+  padding: 0.4em 1em;
+  border-radius: 6px;
+  border: none;
+  background: #f3f3f3;
+  color: #333;
+  transition: background 0.2s, color 0.2s;
+}
+
+.reminder-card button:hover {
+  background: #646cff;
+  color: #fff;
+}
+
+.reminder-card input[type="text"],
+.reminder-card input[type="datetime-local"] {
+  padding: 0.3em 0.7em;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  margin-bottom: 0.3em;
+  font-size: 1em;
+}
