@@ -65,3 +65,10 @@
   margin-bottom: 0.3em;
   font-size: 1em;
 }
+
+.reminder-card.expired {
+  background: #ff4d4f;
+  color: #fff;
+  border: 1.5px solid #b71c1c;
+  opacity: 0.92;
+}

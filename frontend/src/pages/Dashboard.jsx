@@ -137,42 +137,48 @@ export default function Dashboard() {
       <button onClick={createReminder}>Create</button>
       {error && <p style={{ color: "red" }}>{error}</p>}
       <ul className="reminders-list">
-        {reminders.map((r) => (
-          <li key={r._id} className="reminder-card">
-            {editId === r._id ? (
-              <>
-                <input
-                  name="title"
-                  value={editForm.title}
-                  onChange={handleEditInputChange}
-                  style={{ marginRight: 4 }}
-                />
-                <input
-                  name="description"
-                  value={editForm.description}
-                  onChange={handleEditInputChange}
-                  style={{ marginRight: 4 }}
-                />
-                <input
-                  name="time"
-                  type="datetime-local"
-                  value={editForm.time}
-                  onChange={handleEditInputChange}
-                  style={{ marginRight: 4 }}
-                />
-                <button onClick={() => handleEditSave(r._id)}>Save</button>
-                <button onClick={handleEditCancel} style={{ marginLeft: 4 }}>Cancel</button>
-              </>
-            ) : (
-              <>
-                {r.title} - {new Date(r.time).toLocaleString()} <br />
-                {r.description}
-                <button onClick={() => handleEditClick(r)} style={{ marginLeft: 8 }}>Edit</button>
-                <button onClick={() => handleDelete(r._id)} style={{ marginLeft: 4 }}>Delete</button>
-              </>
-            )}
-          </li>
-        ))}
+        {reminders.map((r) => {
+          const isExpired = new Date(r.time) < Date.now();
+          return (
+            <li
+              key={r._id}
+              className={`reminder-card${isExpired ? ' expired' : ''}`}
+            >
+              {editId === r._id ? (
+                <>
+                  <input
+                    name="title"
+                    value={editForm.title}
+                    onChange={handleEditInputChange}
+                    style={{ marginRight: 4 }}
+                  />
+                  <input
+                    name="description"
+                    value={editForm.description}
+                    onChange={handleEditInputChange}
+                    style={{ marginRight: 4 }}
+                  />
+                  <input
+                    name="time"
+                    type="datetime-local"
+                    value={editForm.time}
+                    onChange={handleEditInputChange}
+                    style={{ marginRight: 4 }}
+                  />
+                  <button onClick={() => handleEditSave(r._id)}>Save</button>
+                  <button onClick={handleEditCancel} style={{ marginLeft: 4 }}>Cancel</button>
+                </>
+              ) : (
+                <>
+                  {r.title} - {new Date(r.time).toLocaleString()} <br />
+                  {r.description}
+                  <button onClick={() => handleEditClick(r)} style={{ marginLeft: 8 }}>Edit</button>
+                  <button onClick={() => handleDelete(r._id)} style={{ marginLeft: 4 }}>Delete</button>
+                </>
+              )}
+            </li>
+          );
+        })}
       </ul>
     </div>
   );
